@@ -140,6 +140,18 @@ export const InternalSection3 = ({ data, updateData }: InternalSection3Props) =>
         </div>
 
         <div>
+          <Label htmlFor="lagDelayTimingSeconds">Lag/delay timing (seconds)</Label>
+          <Input
+            id="lagDelayTimingSeconds"
+            type="number"
+            step="0.1"
+            value={data.lagDelayTimingSeconds || ''}
+            onChange={(e) => handleInputChange('lagDelayTimingSeconds', e.target.value)}
+            placeholder="Enter delay time in seconds (e.g., 0.5, 1.2)"
+          />
+        </div>
+
+        <div>
           <Label htmlFor="dataAccuracyConcerns">Data accuracy concerns</Label>
           <Select value={data.dataAccuracyConcerns} onValueChange={(value) => handleInputChange('dataAccuracyConcerns', value)}>
             <SelectTrigger>

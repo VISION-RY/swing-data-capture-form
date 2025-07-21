@@ -24,6 +24,7 @@ export interface InternalSurveyData {
   totalSwings: string;
   falseTriggers: string;
   lagDelayIssues: string;
+  lagDelayTimingSeconds: string;
   dataAccuracyConcerns: string;
   appCrashes: string;
   connectivityIssues: string;
