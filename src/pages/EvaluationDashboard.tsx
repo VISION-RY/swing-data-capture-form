@@ -27,9 +27,21 @@ const EvaluationDashboard = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await getSurveyResponses();
-      setResponses(data);
-      calculateMetrics(data);
+      try {
+        const data = await getSurveyResponses();
+        if (Array.isArray(data)) {
+          setResponses(data);
+          calculateMetrics(data);
+        } else {
+          console.error('Survey responses is not an array:', data);
+          setResponses([]);
+          calculateMetrics([]);
+        }
+      } catch (error) {
+        console.error('Error loading survey responses:', error);
+        setResponses([]);
+        calculateMetrics([]);
+      }
     };
     loadData();
   }, []);
