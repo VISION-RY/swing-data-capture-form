@@ -26,9 +26,12 @@ const EvaluationDashboard = () => {
   const [criticalStatus, setCriticalStatus] = useState<'ready' | 'minor-fixes' | 'significant-work' | 'major-redesign'>('ready');
 
   useEffect(() => {
-    const data = getSurveyResponses();
-    setResponses(data);
-    calculateMetrics(data);
+    const loadData = async () => {
+      const data = await getSurveyResponses();
+      setResponses(data);
+      calculateMetrics(data);
+    };
+    loadData();
   }, []);
 
   const calculateMetrics = (data: SurveyResponse[]) => {

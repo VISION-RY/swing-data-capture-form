@@ -70,9 +70,9 @@ const UserSurvey = () => {
     return formData.launchMonitorExperience && formData.launchMonitorExperience !== 'never-used';
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      const responseId = saveSurveyResponse('external', formData as ExternalSurveyData);
+      const responseId = await saveSurveyResponse('external', formData as ExternalSurveyData);
       toast({
         title: "Survey Submitted Successfully",
         description: `Response ID: ${responseId}`,

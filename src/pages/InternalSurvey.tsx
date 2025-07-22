@@ -42,9 +42,9 @@ const InternalSurvey = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      const responseId = saveSurveyResponse('internal', formData as InternalSurveyData);
+      const responseId = await saveSurveyResponse('internal', formData as InternalSurveyData);
       toast({
         title: "Survey Submitted Successfully",
         description: `Response ID: ${responseId}`,
