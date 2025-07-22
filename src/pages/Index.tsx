@@ -72,7 +72,7 @@ const Index = () => {
           </Card>
         </div>
 
-        <div className="grid md:grid-cols-1 gap-4 max-w-4xl mx-auto mt-8">
+        <div className="max-w-2xl mx-auto mt-8">
           <Card className="shadow-form hover:shadow-lg transition-shadow duration-300">
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Evaluation Dashboard</CardTitle>
