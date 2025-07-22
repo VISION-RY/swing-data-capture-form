@@ -393,9 +393,9 @@ const EvaluationDashboard = () => {
           </Card>
           <Card>
             <CardContent className="p-6">
-              <div className={`text-2xl font-bold ${getStatusColor(criticalStatus)}`}>
-                {criticalStatus.toUpperCase().replace('-', ' ')}
-              </div>
+               <div className={`text-2xl font-bold ${getStatusColor(criticalStatus)}`}>
+                 {criticalStatus === 'major-redesign' ? 'ALPHA' : criticalStatus.toUpperCase().replace('-', ' ')}
+               </div>
               <div className="text-sm text-slate-600">Launch Status</div>
             </CardContent>
           </Card>
