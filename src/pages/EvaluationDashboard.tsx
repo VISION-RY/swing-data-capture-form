@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { getSurveyResponses } from '@/utils/surveyStorage';
 import { SurveyResponse, InternalSurveyData, ExternalSurveyData } from '@/types/survey';
-import { CheckCircle, XCircle, AlertTriangle, FileDown } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, FileDown, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface EvaluationMetric {
   name: string;
@@ -19,6 +20,7 @@ interface EvaluationMetric {
 }
 
 const EvaluationDashboard = () => {
+  const navigate = useNavigate();
   const [responses, setResponses] = useState<SurveyResponse[]>([]);
   const [metrics, setMetrics] = useState<EvaluationMetric[]>([]);
   const [criticalStatus, setCriticalStatus] = useState<'ready' | 'minor-fixes' | 'significant-work' | 'major-redesign'>('ready');
@@ -276,9 +278,19 @@ const EvaluationDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">UAT Evaluation Dashboard</h1>
-            <p className="text-slate-600 mt-2">Post-Survey Analysis & Success Criteria Assessment</p>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900">UAT Evaluation Dashboard</h1>
+              <p className="text-slate-600 mt-2">Post-Survey Analysis & Success Criteria Assessment</p>
+            </div>
           </div>
           <Button onClick={exportEvaluation} className="flex items-center gap-2">
             <FileDown className="h-4 w-4" />
