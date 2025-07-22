@@ -16,6 +16,7 @@ export interface InternalSurveyData {
   sessionType: string;
 
   // Section 3: Technical Performance Observations
+  watchedTutorial: string;
   setupSpeed: number;
   userConfusionLevel: number;
   requiredAssistance: string;
@@ -55,10 +56,10 @@ export interface InternalSurveyData {
   issue3Description: string;
 
   successMoments: string;
-  wouldUserPurchase: string;
-  readyForMarket: string;
   sessionSuccessRating: string;
-  userAdoptionLikelihood: string;
+  testingGoalsMet: string;
+  userEngagementLevel: string;
+  systemStability: string;
   priorityFixes: string;
 }
 

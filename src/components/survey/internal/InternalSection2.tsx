@@ -60,6 +60,7 @@ export const InternalSection2 = ({ data, updateData }: InternalSection2Props) =>
               <SelectItem value="comparative-testing">Comparative testing (vs other tech)</SelectItem>
               <SelectItem value="high-volume-testing">High-volume testing (multiple users)</SelectItem>
               <SelectItem value="quick-setup-breakdown">Quick setup/breakdown test</SelectItem>
+              <SelectItem value="testing">Testing</SelectItem>
             </SelectContent>
           </Select>
         </div>

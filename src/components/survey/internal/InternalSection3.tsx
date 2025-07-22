@@ -20,8 +20,25 @@ export const InternalSection3 = ({ data, updateData }: InternalSection3Props) =>
 
   return (
     <div className="space-y-6">
-      <div className="space-y-6">
-        <h3 className="text-lg font-semibold">Setup Process</h3>
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold">Setup Process</h3>
+          
+          <div className="space-y-2">
+            <Label htmlFor="watchedTutorial">Did the user watch the setup tutorial video(s)?</Label>
+            <Select
+              value={data.watchedTutorial || ""}
+              onValueChange={(value) => handleInputChange('watchedTutorial', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="yes">Yes</SelectItem>
+                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="partial">Partially</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         
         <div>
           <Label>Setup Speed (1=Poor, 5=Excellent)</Label>

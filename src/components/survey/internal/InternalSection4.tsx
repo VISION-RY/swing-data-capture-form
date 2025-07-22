@@ -3,7 +3,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, Plus } from "lucide-react";
 import { InternalSurveyData } from "@/types/survey";
+import { useState } from "react";
 
 interface InternalSection4Props {
   data: Partial<InternalSurveyData>;
@@ -11,6 +15,10 @@ interface InternalSection4Props {
 }
 
 export const InternalSection4 = ({ data, updateData }: InternalSection4Props) => {
+  const [issue2Open, setIssue2Open] = useState(false);
+  const [issue3Open, setIssue3Open] = useState(false);
+  const [additionalIssues, setAdditionalIssues] = useState<number[]>([]);
+
   const handleInputChange = (field: keyof InternalSurveyData, value: string) => {
     updateData({ [field]: value });
   };
@@ -19,157 +27,135 @@ export const InternalSection4 = ({ data, updateData }: InternalSection4Props) =>
     updateData({ [field]: value[0] });
   };
 
+  const addAdditionalIssue = () => {
+    const nextIssueNumber = 4 + additionalIssues.length;
+    setAdditionalIssues([...additionalIssues, nextIssueNumber]);
+  };
+
   const issueTypes = [
-    "Hardware malfunction",
-    "Software/app crash",
-    "Data accuracy problem",
-    "User interface confusion",
-    "Setup difficulty",
-    "Calibration failure",
-    "Connectivity issue",
-    "Performance lag",
-    "Safety concern",
-    "Documentation unclear",
+    "Hardware Setup",
+    "Software/App Issue",
+    "Data Accuracy",
+    "User Interface",
+    "Performance/Speed",
+    "Connectivity",
+    "Calibration",
+    "User Experience",
+    "Documentation",
     "Other"
   ];
 
   const issuePriorities = [
-    "Blocker - Prevents basic functionality",
-    "Critical - Major feature doesn't work",
-    "High - Important feature impaired",
-    "Medium - Minor functionality issue",
-    "Low - Cosmetic or enhancement"
+    "Critical",
+    "High",
+    "Medium", 
+    "Low"
   ];
 
   const issueImpacts = [
-    "Affects all users",
-    "Affects specific persona only",
-    "Affects specific environment only",
-    "Affects first-time users only",
-    "Affects experienced users only"
+    "Blocks core functionality",
+    "Degrades user experience",
+    "Minor inconvenience",
+    "Cosmetic issue"
   ];
 
   const resolutionUrgencies = [
-    "Fix before any further testing",
-    "Fix before launch",
-    "Fix in post-launch update",
-    "Consider for future version",
-    "No fix needed"
+    "Immediate (before next session)",
+    "This week",
+    "Next sprint",
+    "Future release"
   ];
 
   const renderIssueSection = (issueNumber: number) => {
-    const issueFields = {
-      1: {
-        type: 'issue1Type',
-        priority: 'issue1Priority',
-        impact: 'issue1Impact',
-        urgency: 'issue1Urgency',
-        description: 'issue1Description'
-      },
-      2: {
-        type: 'issue2Type',
-        priority: 'issue2Priority',
-        impact: 'issue2Impact',
-        urgency: 'issue2Urgency',
-        description: 'issue2Description'
-      },
-      3: {
-        type: 'issue3Type',
-        priority: 'issue3Priority',
-        impact: 'issue3Impact',
-        urgency: 'issue3Urgency',
-        description: 'issue3Description'
-      }
-    };
-
-    const fields = issueFields[issueNumber as keyof typeof issueFields];
-
+    const issueKey = `issue${issueNumber}` as const;
+    
     return (
-      <div className="space-y-4 p-4 border rounded-lg">
-        <h4 className="font-semibold">Issue #{issueNumber}</h4>
-        
-        <div>
-          <Label>Issue Type</Label>
-          <Select 
-            value={data[fields.type as keyof InternalSurveyData] as string} 
-            onValueChange={(value) => handleInputChange(fields.type as keyof InternalSurveyData, value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select issue type" />
-            </SelectTrigger>
-            <SelectContent>
-              {issueTypes.map(type => (
-                <SelectItem key={type} value={type.toLowerCase().replace(/[^a-z0-9]/g, '-')}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor={`${issueKey}Type`}>Issue Type</Label>
+            <Select
+              value={data[`${issueKey}Type` as keyof InternalSurveyData] as string || ""}
+              onValueChange={(value) => handleInputChange(`${issueKey}Type` as keyof InternalSurveyData, value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select issue type" />
+              </SelectTrigger>
+              <SelectContent>
+                {issueTypes.map((type) => (
+                  <SelectItem key={type} value={type.toLowerCase().replace(/[\/\s]/g, '-')}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor={`${issueKey}Priority`}>Priority</Label>
+            <Select
+              value={data[`${issueKey}Priority` as keyof InternalSurveyData] as string || ""}
+              onValueChange={(value) => handleInputChange(`${issueKey}Priority` as keyof InternalSurveyData, value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select priority" />
+              </SelectTrigger>
+              <SelectContent>
+                {issuePriorities.map((priority) => (
+                  <SelectItem key={priority} value={priority.toLowerCase()}>
+                    {priority}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor={`${issueKey}Impact`}>Impact</Label>
+            <Select
+              value={data[`${issueKey}Impact` as keyof InternalSurveyData] as string || ""}
+              onValueChange={(value) => handleInputChange(`${issueKey}Impact` as keyof InternalSurveyData, value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select impact" />
+              </SelectTrigger>
+              <SelectContent>
+                {issueImpacts.map((impact) => (
+                  <SelectItem key={impact} value={impact.toLowerCase().replace(/\s/g, '-')}>
+                    {impact}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor={`${issueKey}Urgency`}>Resolution Urgency</Label>
+            <Select
+              value={data[`${issueKey}Urgency` as keyof InternalSurveyData] as string || ""}
+              onValueChange={(value) => handleInputChange(`${issueKey}Urgency` as keyof InternalSurveyData, value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select urgency" />
+              </SelectTrigger>
+              <SelectContent>
+                {resolutionUrgencies.map((urgency) => (
+                  <SelectItem key={urgency} value={urgency.toLowerCase().replace(/[()]/g, '').replace(/\s/g, '-')}>
+                    {urgency}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <div>
-          <Label>Issue Priority</Label>
-          <Select 
-            value={data[fields.priority as keyof InternalSurveyData] as string} 
-            onValueChange={(value) => handleInputChange(fields.priority as keyof InternalSurveyData, value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select issue priority" />
-            </SelectTrigger>
-            <SelectContent>
-              {issuePriorities.map(priority => (
-                <SelectItem key={priority} value={priority.toLowerCase().replace(/[^a-z0-9]/g, '-')}>
-                  {priority}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <Label>Issue Impact</Label>
-          <Select 
-            value={data[fields.impact as keyof InternalSurveyData] as string} 
-            onValueChange={(value) => handleInputChange(fields.impact as keyof InternalSurveyData, value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select issue impact" />
-            </SelectTrigger>
-            <SelectContent>
-              {issueImpacts.map(impact => (
-                <SelectItem key={impact} value={impact.toLowerCase().replace(/[^a-z0-9]/g, '-')}>
-                  {impact}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <Label>Resolution Urgency</Label>
-          <Select 
-            value={data[fields.urgency as keyof InternalSurveyData] as string} 
-            onValueChange={(value) => handleInputChange(fields.urgency as keyof InternalSurveyData, value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select resolution urgency" />
-            </SelectTrigger>
-            <SelectContent>
-              {resolutionUrgencies.map(urgency => (
-                <SelectItem key={urgency} value={urgency.toLowerCase().replace(/[^a-z0-9]/g, '-')}>
-                  {urgency}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <Label>Issue Description</Label>
+        <div className="space-y-2">
+          <Label htmlFor={`${issueKey}Description`}>Detailed Description</Label>
           <Textarea
-            value={data[fields.description as keyof InternalSurveyData] as string || ''}
-            onChange={(e) => handleInputChange(fields.description as keyof InternalSurveyData, e.target.value)}
-            placeholder="Describe the issue in detail..."
+            id={`${issueKey}Description`}
+            placeholder="Describe the issue in detail, including steps to reproduce, expected vs actual behavior, and any workarounds discovered..."
+            value={data[`${issueKey}Description` as keyof InternalSurveyData] as string || ""}
+            onChange={(e) => handleInputChange(`${issueKey}Description` as keyof InternalSurveyData, e.target.value)}
             rows={3}
           />
         </div>
@@ -182,142 +168,216 @@ export const InternalSection4 = ({ data, updateData }: InternalSection4Props) =>
       <div className="space-y-6">
         <h3 className="text-lg font-semibold">User Engagement</h3>
         
-        <div>
-          <Label htmlFor="timeToFirstSwing">Time to first successful swing (minutes)</Label>
-          <Input
-            id="timeToFirstSwing"
-            type="number"
-            value={data.timeToFirstSwing || ''}
-            onChange={(e) => handleInputChange('timeToFirstSwing', e.target.value)}
-            placeholder="Enter time in minutes"
-          />
-        </div>
-
-        <div>
-          <Label>User Excitement Level (1-5 scale)</Label>
-          <div className="px-4 py-6">
-            <Slider
-              value={[data.userExcitementLevel || 3]}
-              onValueChange={(value) => handleSliderChange('userExcitementLevel', value)}
-              max={5}
-              min={1}
-              step={1}
-              className="w-full"
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="timeToFirstSwing">Time to first swing (minutes)</Label>
+            <Input
+              id="timeToFirstSwing"
+              type="number"
+              step="0.5"
+              value={data.timeToFirstSwing || ''}
+              onChange={(e) => handleInputChange('timeToFirstSwing', e.target.value)}
+              placeholder="e.g., 5.5"
             />
-            <div className="flex justify-between text-sm text-muted-foreground mt-2">
-              <span>Low (1)</span>
-              <span>High (5)</span>
+          </div>
+
+          <div className="space-y-2">
+            <Label>User Excitement Level (1=Not engaged, 5=Very excited)</Label>
+            <div className="px-4 py-6">
+              <Slider
+                value={[data.userExcitementLevel || 3]}
+                onValueChange={(value) => handleSliderChange('userExcitementLevel', value)}
+                max={5}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                <span>Not engaged (1)</span>
+                <span>Very excited (5)</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div>
-          <Label htmlFor="frustrationMoments">Frustration Moments</Label>
-          <Textarea
-            id="frustrationMoments"
-            value={data.frustrationMoments || ''}
-            onChange={(e) => handleInputChange('frustrationMoments', e.target.value)}
-            placeholder="Describe any moments of user frustration..."
-            rows={3}
-          />
-        </div>
+          <div className="space-y-2">
+            <Label htmlFor="frustrationMoments">Frustration moments observed</Label>
+            <Textarea
+              id="frustrationMoments"
+              placeholder="Describe any moments where the user showed frustration, confusion, or difficulty..."
+              value={data.frustrationMoments || ''}
+              onChange={(e) => handleInputChange('frustrationMoments', e.target.value)}
+              rows={3}
+            />
+          </div>
 
-        <div>
-          <Label htmlFor="breakthroughMoments">Breakthrough Moments</Label>
-          <Textarea
-            id="breakthroughMoments"
-            value={data.breakthroughMoments || ''}
-            onChange={(e) => handleInputChange('breakthroughMoments', e.target.value)}
-            placeholder="Describe any breakthrough or 'aha' moments..."
-            rows={3}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="breakthroughMoments">"Aha!" or breakthrough moments</Label>
+            <Textarea
+              id="breakthroughMoments"
+              placeholder="Describe any moments where the user had a positive realization or breakthrough understanding..."
+              value={data.breakthroughMoments || ''}
+              onChange={(e) => handleInputChange('breakthroughMoments', e.target.value)}
+              rows={3}
+            />
+          </div>
         </div>
+      </div>
 
-        <h3 className="text-lg font-semibold pt-4">Critical Issues Observed</h3>
+      <div className="space-y-6">
+        <h3 className="text-lg font-semibold">Issues Encountered</h3>
         
-        {[1, 2, 3].map(issueNumber => renderIssueSection(issueNumber))}
+        {/* Issue 1 - Always visible */}
+        <div className="border rounded-lg p-4">
+          <h4 className="font-medium mb-4">Issue #1</h4>
+          {renderIssueSection(1)}
+        </div>
 
-        <div>
-          <Label htmlFor="successMoments">Success Moments</Label>
+        {/* Issue 2 - Collapsible */}
+        <Collapsible open={issue2Open} onOpenChange={setIssue2Open}>
+          <div className="border rounded-lg">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between p-4 h-auto">
+                <span className="font-medium">Issue #2</span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${issue2Open ? 'rotate-180' : ''}`} />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="p-4 pt-0">
+              {renderIssueSection(2)}
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+
+        {/* Issue 3 - Collapsible */}
+        <Collapsible open={issue3Open} onOpenChange={setIssue3Open}>
+          <div className="border rounded-lg">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between p-4 h-auto">
+                <span className="font-medium">Issue #3</span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${issue3Open ? 'rotate-180' : ''}`} />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="p-4 pt-0">
+              {renderIssueSection(3)}
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+
+        {/* Additional Issues */}
+        {additionalIssues.map((issueNumber) => (
+          <div key={issueNumber} className="border rounded-lg p-4">
+            <h4 className="font-medium mb-4">Issue #{issueNumber}</h4>
+            {renderIssueSection(issueNumber)}
+          </div>
+        ))}
+
+        {/* Add More Issues Button */}
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={addAdditionalIssue}
+          className="w-full"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Another Issue
+        </Button>
+      </div>
+
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="successMoments">Success moments and positive feedback</Label>
           <Textarea
             id="successMoments"
+            placeholder="Describe successful interactions, positive user reactions, or features that worked particularly well..."
             value={data.successMoments || ''}
             onChange={(e) => handleInputChange('successMoments', e.target.value)}
-            placeholder="What worked exceptionally well, user 'wow' moments, smooth workflow areas..."
-            rows={4}
+            rows={3}
           />
         </div>
+      </div>
 
-        <h3 className="text-lg font-semibold pt-4">Overall Session Assessment</h3>
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Overall Session Assessment</h3>
         
-        <div>
-          <Label htmlFor="wouldUserPurchase">Would this user purchase the system?</Label>
-          <Select value={data.wouldUserPurchase} onValueChange={(value) => handleInputChange('wouldUserPurchase', value)}>
+        <div className="space-y-2">
+          <Label htmlFor="sessionSuccessRating">Session Success Rating (1-10)</Label>
+          <Select
+            value={data.sessionSuccessRating || ""}
+            onValueChange={(value) => handleInputChange('sessionSuccessRating', value)}
+          >
             <SelectTrigger>
-              <SelectValue placeholder="Select purchase likelihood" />
+              <SelectValue placeholder="Select rating" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="definitely">Definitely</SelectItem>
-              <SelectItem value="probably">Probably</SelectItem>
-              <SelectItem value="maybe">Maybe</SelectItem>
-              <SelectItem value="probably-not">Probably not</SelectItem>
-              <SelectItem value="definitely-not">Definitely not</SelectItem>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
+                <SelectItem key={rating} value={rating.toString()}>
+                  {rating}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div>
-          <Label htmlFor="readyForMarket">Ready for market release?</Label>
-          <Select value={data.readyForMarket} onValueChange={(value) => handleInputChange('readyForMarket', value)}>
+        <div className="space-y-2">
+          <Label htmlFor="testingGoalsMet">Were the testing goals met?</Label>
+          <Select
+            value={data.testingGoalsMet || ""}
+            onValueChange={(value) => handleInputChange('testingGoalsMet', value)}
+          >
             <SelectTrigger>
-              <SelectValue placeholder="Select market readiness" />
+              <SelectValue placeholder="Select option" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="yes-ready-now">Yes - ready now</SelectItem>
-              <SelectItem value="yes-minor-fixes">Yes with minor fixes</SelectItem>
-              <SelectItem value="no-significant-work">No - needs significant work</SelectItem>
-              <SelectItem value="no-major-redesign">No - major redesign needed</SelectItem>
+              <SelectItem value="fully">Fully Met</SelectItem>
+              <SelectItem value="mostly">Mostly Met</SelectItem>
+              <SelectItem value="partially">Partially Met</SelectItem>
+              <SelectItem value="not-met">Not Met</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div>
-          <Label htmlFor="sessionSuccessRating">Session Success Rating</Label>
-          <Select value={data.sessionSuccessRating} onValueChange={(value) => handleInputChange('sessionSuccessRating', value)}>
+        <div className="space-y-2">
+          <Label htmlFor="userEngagementLevel">User Engagement Level</Label>
+          <Select
+            value={data.userEngagementLevel || ""}
+            onValueChange={(value) => handleInputChange('userEngagementLevel', value)}
+          >
             <SelectTrigger>
-              <SelectValue placeholder="Select session success rating" />
+              <SelectValue placeholder="Select level" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="exceeded-expectations">Exceeded expectations</SelectItem>
-              <SelectItem value="met-expectations">Met expectations</SelectItem>
-              <SelectItem value="below-expectations">Below expectations</SelectItem>
-              <SelectItem value="failed-basic-requirements">Failed to meet basic requirements</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="disengaged">Disengaged</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div>
-          <Label htmlFor="userAdoptionLikelihood">User Adoption Likelihood</Label>
-          <Select value={data.userAdoptionLikelihood} onValueChange={(value) => handleInputChange('userAdoptionLikelihood', value)}>
+        <div className="space-y-2">
+          <Label htmlFor="systemStability">System Stability During Session</Label>
+          <Select
+            value={data.systemStability || ""}
+            onValueChange={(value) => handleInputChange('systemStability', value)}
+          >
             <SelectTrigger>
-              <SelectValue placeholder="Select adoption likelihood" />
+              <SelectValue placeholder="Select stability" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="high">High - will definitely adopt</SelectItem>
-              <SelectItem value="medium">Medium - likely to adopt</SelectItem>
-              <SelectItem value="low">Low - unlikely to adopt</SelectItem>
-              <SelectItem value="very-low">Very low - will not adopt</SelectItem>
+              <SelectItem value="excellent">Excellent</SelectItem>
+              <SelectItem value="good">Good</SelectItem>
+              <SelectItem value="fair">Fair</SelectItem>
+              <SelectItem value="poor">Poor</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div>
-          <Label htmlFor="priorityFixes">Priority Fixes Needed</Label>
+        <div className="space-y-2">
+          <Label htmlFor="priorityFixes">Priority fixes needed for next testing session</Label>
           <Textarea
             id="priorityFixes"
+            placeholder="List the most important fixes or improvements needed based on this session..."
             value={data.priorityFixes || ''}
             onChange={(e) => handleInputChange('priorityFixes', e.target.value)}
-            placeholder="List the most critical fixes needed before launch..."
             rows={4}
           />
         </div>

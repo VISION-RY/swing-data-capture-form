@@ -317,7 +317,7 @@ const EvaluationDashboard = () => {
       case 'ready': return 'LAUNCH READY - All critical criteria met';
       case 'minor-fixes': return 'LAUNCH WITH MINOR FIXES - Address specific issues';
       case 'significant-work': return 'NEEDS SIGNIFICANT WORK - Major improvements required';
-      case 'major-redesign': return 'MAJOR REDESIGN REQUIRED - Fundamental changes needed';
+      case 'major-redesign': return 'ALPHA - Fundamental changes needed';
     }
   };
 
