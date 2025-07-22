@@ -72,7 +72,7 @@ const Index = () => {
           </Card>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto mt-8">
+        <div className="grid md:grid-cols-1 gap-4 max-w-4xl mx-auto mt-8">
           <Card className="shadow-form hover:shadow-lg transition-shadow duration-300">
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Evaluation Dashboard</CardTitle>
@@ -87,24 +87,6 @@ const Index = () => {
                 onClick={() => navigate('/evaluation')}
               >
                 View Evaluation Results
-              </Button>
-            </CardContent>
-          </Card>
-          
-          <Card className="shadow-form hover:shadow-lg transition-shadow duration-300">
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">Admin Dashboard</CardTitle>
-              <CardDescription>
-                Manage survey data and system administration
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="secondary"
-                className="w-full"
-                onClick={() => navigate('/admin')}
-              >
-                Access Admin Panel
               </Button>
             </CardContent>
           </Card>

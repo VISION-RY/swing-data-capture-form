@@ -7,7 +7,6 @@ import Index from "./pages/Index";
 import InternalSurvey from "./pages/InternalSurvey";
 import UserSurvey from "./pages/UserSurvey";
 import EvaluationDashboard from "./pages/EvaluationDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,7 +22,6 @@ const App = () => (
           <Route path="/internal-survey" element={<InternalSurvey />} />
           <Route path="/user-survey" element={<UserSurvey />} />
           <Route path="/evaluation" element={<EvaluationDashboard />} />
-          <Route path="/admin" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
