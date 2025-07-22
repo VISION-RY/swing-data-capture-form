@@ -96,7 +96,9 @@ export default {
 			},
 			boxShadow: {
 				'card': 'var(--shadow-card)',
-				'form': 'var(--shadow-form)'
+				'form': 'var(--shadow-form)',
+				'elegant': 'var(--shadow-elegant)',
+				'subtle': 'var(--shadow-subtle)'
 			}
 		}
 	},
