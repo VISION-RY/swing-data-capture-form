@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
 import { getSurveyResponses } from '@/utils/surveyStorage';
 import { SurveyResponse, InternalSurveyData, ExternalSurveyData } from '@/types/survey';
-import { CheckCircle, XCircle, AlertTriangle, FileDown, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, FileDown, ArrowLeft, Calendar, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface EvaluationMetric {
@@ -24,6 +25,8 @@ const EvaluationDashboard = () => {
   const [responses, setResponses] = useState<SurveyResponse[]>([]);
   const [metrics, setMetrics] = useState<EvaluationMetric[]>([]);
   const [criticalStatus, setCriticalStatus] = useState<'ready' | 'minor-fixes' | 'significant-work' | 'major-redesign'>('ready');
+  const [selectedResponses, setSelectedResponses] = useState<Set<string>>(new Set());
+  const [filterType, setFilterType] = useState<'all' | 'internal' | 'external'>('all');
 
   useEffect(() => {
     const loadData = async () => {
@@ -260,17 +263,21 @@ const EvaluationDashboard = () => {
     a.click();
   };
 
-  const exportSurveyDataCSV = () => {
-    if (responses.length === 0) {
+  const exportSurveyDataCSV = (selectedOnly = false) => {
+    const dataToExport = selectedOnly 
+      ? responses.filter(r => selectedResponses.has(r.id))
+      : responses;
+
+    if (dataToExport.length === 0) {
       return;
     }
 
     // Create CSV headers
     const headers = ['ID', 'Type', 'Session ID', 'Timestamp'];
     
-    // Get all possible data keys from all responses
+    // Get all possible data keys from selected responses
     const allDataKeys = new Set<string>();
-    responses.forEach(response => {
+    dataToExport.forEach(response => {
       Object.keys(response.data).forEach(key => allDataKeys.add(key));
     });
     
@@ -279,7 +286,7 @@ const EvaluationDashboard = () => {
     // Create CSV rows
     const csvRows = [headers.join(',')];
     
-    responses.forEach(response => {
+    dataToExport.forEach(response => {
       const row = [
         response.id,
         response.type,
@@ -307,7 +314,8 @@ const EvaluationDashboard = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `fullswing-survey-data-${new Date().toISOString().split('T')[0]}.csv`;
+    const suffix = selectedOnly ? 'selected' : 'all';
+    a.download = `fullswing-survey-data-${suffix}-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -341,6 +349,32 @@ const EvaluationDashboard = () => {
     </div>
   );
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const filteredIds = getFilteredResponses().map(r => r.id);
+      setSelectedResponses(new Set(filteredIds));
+    } else {
+      setSelectedResponses(new Set());
+    }
+  };
+
+  const handleSelectResponse = (responseId: string, checked: boolean) => {
+    const newSelected = new Set(selectedResponses);
+    if (checked) {
+      newSelected.add(responseId);
+    } else {
+      newSelected.delete(responseId);
+    }
+    setSelectedResponses(newSelected);
+  };
+
+  const getFilteredResponses = () => {
+    return responses.filter(response => {
+      if (filterType === 'all') return true;
+      return response.type === filterType;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -360,9 +394,18 @@ const EvaluationDashboard = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button onClick={exportSurveyDataCSV} variant="outline" className="flex items-center gap-2">
+            <Button onClick={() => exportSurveyDataCSV(false)} variant="outline" className="flex items-center gap-2">
               <FileDown className="h-4 w-4" />
-              Export Survey CSV
+              Export All CSV
+            </Button>
+            <Button 
+              onClick={() => exportSurveyDataCSV(true)} 
+              variant="outline" 
+              className="flex items-center gap-2"
+              disabled={selectedResponses.size === 0}
+            >
+              <FileDown className="h-4 w-4" />
+              Export Selected ({selectedResponses.size})
             </Button>
             <Button onClick={exportEvaluation} className="flex items-center gap-2">
               <FileDown className="h-4 w-4" />
@@ -401,6 +444,91 @@ const EvaluationDashboard = () => {
           </Card>
         </div>
 
+        {/* Survey Entries List */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Survey Entries
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={filterType === 'all' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('all')}
+                >
+                  All ({responses.length})
+                </Button>
+                <Button
+                  variant={filterType === 'internal' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('internal')}
+                >
+                  Internal ({responses.filter(r => r.type === 'internal').length})
+                </Button>
+                <Button
+                  variant={filterType === 'external' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('external')}
+                >
+                  External ({responses.filter(r => r.type === 'external').length})
+                </Button>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {getFilteredResponses().length === 0 ? (
+              <div className="text-center py-8 text-slate-500">
+                No survey responses found for the selected filter.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 border-b pb-3">
+                  <Checkbox
+                    checked={getFilteredResponses().every(r => selectedResponses.has(r.id))}
+                    onCheckedChange={handleSelectAll}
+                  />
+                  <span className="font-medium">Select All</span>
+                  <span className="text-sm text-slate-500">
+                    ({selectedResponses.size} selected)
+                  </span>
+                </div>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {getFilteredResponses().map((response) => (
+                    <div
+                      key={response.id}
+                      className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                    >
+                      <Checkbox
+                        checked={selectedResponses.has(response.id)}
+                        onCheckedChange={(checked) => handleSelectResponse(response.id, checked as boolean)}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant={response.type === 'internal' ? 'default' : 'secondary'}>
+                            {response.type === 'internal' ? 'Internal' : 'External'}
+                          </Badge>
+                          <span className="text-xs text-slate-500">
+                            ID: {response.id.slice(0, 8)}...
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-slate-600">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(response.timestamp).toLocaleDateString()}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {response.sessionId}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Launch Readiness Status */}
         <Card>
           <CardHeader>
@@ -429,13 +557,18 @@ const EvaluationDashboard = () => {
         </Card>
 
         {/* Metrics Tabs */}
-        <Tabs defaultValue="setup" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="entries" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="entries">Survey Entries</TabsTrigger>
             <TabsTrigger value="setup">Setup & Onboarding</TabsTrigger>
             <TabsTrigger value="interface">App & Interface</TabsTrigger>
             <TabsTrigger value="hitting">Hitting Experience</TabsTrigger>
             <TabsTrigger value="overall">Overall Experience</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="entries" className="space-y-4">
+            {/* Survey entries content is already shown above */}
+          </TabsContent>
 
           <TabsContent value="setup" className="space-y-4">
             <Card>
