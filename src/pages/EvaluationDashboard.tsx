@@ -260,6 +260,58 @@ const EvaluationDashboard = () => {
     a.click();
   };
 
+  const exportSurveyDataCSV = () => {
+    if (responses.length === 0) {
+      return;
+    }
+
+    // Create CSV headers
+    const headers = ['ID', 'Type', 'Session ID', 'Timestamp'];
+    
+    // Get all possible data keys from all responses
+    const allDataKeys = new Set<string>();
+    responses.forEach(response => {
+      Object.keys(response.data).forEach(key => allDataKeys.add(key));
+    });
+    
+    headers.push(...Array.from(allDataKeys).sort());
+    
+    // Create CSV rows
+    const csvRows = [headers.join(',')];
+    
+    responses.forEach(response => {
+      const row = [
+        response.id,
+        response.type,
+        response.sessionId,
+        response.timestamp
+      ];
+      
+      // Add data values in the same order as headers
+      Array.from(allDataKeys).sort().forEach(key => {
+        const value = response.data[key as keyof typeof response.data];
+        // Handle arrays and objects by stringifying them
+        const cellValue = Array.isArray(value) 
+          ? `"${value.join('; ')}"` 
+          : typeof value === 'object' && value !== null
+          ? `"${JSON.stringify(value).replace(/"/g, '""')}"` 
+          : `"${String(value || '').replace(/"/g, '""')}"`;
+        row.push(cellValue);
+      });
+      
+      csvRows.push(row.join(','));
+    });
+    
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fullswing-survey-data-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const getRecommendation = () => {
     switch (criticalStatus) {
       case 'ready': return 'LAUNCH READY - All critical criteria met';
@@ -307,10 +359,16 @@ const EvaluationDashboard = () => {
               <p className="text-slate-600 mt-2">Post-Survey Analysis & Success Criteria Assessment</p>
             </div>
           </div>
-          <Button onClick={exportEvaluation} className="flex items-center gap-2">
-            <FileDown className="h-4 w-4" />
-            Export Evaluation
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={exportSurveyDataCSV} variant="outline" className="flex items-center gap-2">
+              <FileDown className="h-4 w-4" />
+              Export Survey CSV
+            </Button>
+            <Button onClick={exportEvaluation} className="flex items-center gap-2">
+              <FileDown className="h-4 w-4" />
+              Export Evaluation
+            </Button>
+          </div>
         </div>
 
         {/* Summary Cards */}
