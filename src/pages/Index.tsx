@@ -72,6 +72,26 @@ const Index = () => {
           </Card>
         </div>
 
+        <div className="max-w-2xl mx-auto mt-8">
+          <Card className="shadow-form hover:shadow-lg transition-shadow duration-300">
+            <CardHeader className="text-center">
+              <CardTitle className="text-xl">Evaluation Dashboard</CardTitle>
+              <CardDescription>
+                Analyze survey responses and view success criteria assessment
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate('/evaluation')}
+              >
+                View Evaluation Results
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
         <div className="text-center mt-12">
           <Card className="max-w-2xl mx-auto bg-accent/50">
             <CardContent className="pt-6">
