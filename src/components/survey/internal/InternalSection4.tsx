@@ -220,6 +220,37 @@ export const InternalSection4 = ({ data, updateData }: InternalSection4Props) =>
               rows={3}
             />
           </div>
+
+          <div className="space-y-2">
+            <Label>Learning Curve Rating (1=Very steep, 5=Very easy)</Label>
+            <div className="px-4 py-6">
+              <Slider
+                value={[data.learningCurveRating || 3]}
+                onValueChange={(value) => handleSliderChange('learningCurveRating', value)}
+                max={5}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                <span>Very steep (1)</span>
+                <span>Very easy (5)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="featureAdoptionRate">Feature adoption rate (%)</Label>
+            <Input
+              id="featureAdoptionRate"
+              type="number"
+              min="0"
+              max="100"
+              value={data.featureAdoptionRate || ''}
+              onChange={(e) => handleInputChange('featureAdoptionRate', e.target.value)}
+              placeholder="e.g., 75 (percentage of features user attempted to use)"
+            />
+          </div>
         </div>
       </div>
 
@@ -282,7 +313,114 @@ export const InternalSection4 = ({ data, updateData }: InternalSection4Props) =>
         </Button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
+        <h3 className="text-lg font-semibold">Success Criteria Assessment</h3>
+        
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="coreFeatureFunctionality">Core feature functionality</Label>
+            <Select
+              value={data.coreFeatureFunctionality || ""}
+              onValueChange={(value) => handleInputChange('coreFeatureFunctionality', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select functionality level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fully-functional">Fully functional</SelectItem>
+                <SelectItem value="mostly-functional">Mostly functional</SelectItem>
+                <SelectItem value="partially-functional">Partially functional</SelectItem>
+                <SelectItem value="not-functional">Not functional</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Data visualization clarity (1=Unclear, 5=Very clear)</Label>
+            <div className="px-4 py-6">
+              <Slider
+                value={[data.dataVisualizationClarity || 3]}
+                onValueChange={(value) => handleSliderChange('dataVisualizationClarity', value)}
+                max={5}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                <span>Unclear (1)</span>
+                <span>Very clear (5)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="reportGenerationSuccess">Report generation success</Label>
+            <Select
+              value={data.reportGenerationSuccess || ""}
+              onValueChange={(value) => handleInputChange('reportGenerationSuccess', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select success level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="successful">Successful</SelectItem>
+                <SelectItem value="mostly-successful">Mostly successful</SelectItem>
+                <SelectItem value="partially-successful">Partially successful</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="userTaskCompletionRate">User task completion rate (%)</Label>
+            <Input
+              id="userTaskCompletionRate"
+              type="number"
+              min="0"
+              max="100"
+              value={data.userTaskCompletionRate || ''}
+              onChange={(e) => handleInputChange('userTaskCompletionRate', e.target.value)}
+              placeholder="e.g., 80"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="errorRecoverySuccess">Error recovery success</Label>
+            <Select
+              value={data.errorRecoverySuccess || ""}
+              onValueChange={(value) => handleInputChange('errorRecoverySuccess', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select recovery level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="excellent">Excellent</SelectItem>
+                <SelectItem value="good">Good</SelectItem>
+                <SelectItem value="fair">Fair</SelectItem>
+                <SelectItem value="poor">Poor</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Documentation effectiveness (1=Not helpful, 5=Very helpful)</Label>
+            <div className="px-4 py-6">
+              <Slider
+                value={[data.documentationEffectiveness || 3]}
+                onValueChange={(value) => handleSliderChange('documentationEffectiveness', value)}
+                max={5}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                <span>Not helpful (1)</span>
+                <span>Very helpful (5)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label htmlFor="successMoments">Success moments and positive feedback</Label>
           <Textarea
@@ -367,6 +505,60 @@ export const InternalSection4 = ({ data, updateData }: InternalSection4Props) =>
               <SelectItem value="good">Good</SelectItem>
               <SelectItem value="fair">Fair</SelectItem>
               <SelectItem value="poor">Poor</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Overall satisfaction score (1-10)</Label>
+          <div className="px-4 py-6">
+            <Slider
+              value={[data.overallSatisfactionScore || 5]}
+              onValueChange={(value) => handleSliderChange('overallSatisfactionScore', value)}
+              max={10}
+              min={1}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-sm text-muted-foreground mt-2">
+              <span>1</span>
+              <span>10</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Recommendation likelihood (1-10)</Label>
+          <div className="px-4 py-6">
+            <Slider
+              value={[data.recommendationLikelihood || 5]}
+              onValueChange={(value) => handleSliderChange('recommendationLikelihood', value)}
+              max={10}
+              min={1}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-sm text-muted-foreground mt-2">
+              <span>Not likely (1)</span>
+              <span>Very likely (10)</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="marketReadinessAssessment">Market readiness assessment</Label>
+          <Select
+            value={data.marketReadinessAssessment || ""}
+            onValueChange={(value) => handleInputChange('marketReadinessAssessment', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select readiness level" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ready-for-launch">Ready for launch</SelectItem>
+              <SelectItem value="minor-fixes-needed">Minor fixes needed</SelectItem>
+              <SelectItem value="major-improvements-needed">Major improvements needed</SelectItem>
+              <SelectItem value="not-ready">Not ready for market</SelectItem>
             </SelectContent>
           </Select>
         </div>

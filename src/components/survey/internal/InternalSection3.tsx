@@ -106,6 +106,30 @@ export const InternalSection3 = ({ data, updateData }: InternalSection3Props) =>
           </Select>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="setupTimeMinutes">Total setup time (minutes)</Label>
+            <Input
+              id="setupTimeMinutes"
+              type="number"
+              step="0.5"
+              value={data.setupTimeMinutes || ''}
+              onChange={(e) => handleInputChange('setupTimeMinutes', e.target.value)}
+              placeholder="e.g., 15.5"
+            />
+          </div>
+          <div>
+            <Label htmlFor="calibrationAttempts">Number of calibration attempts</Label>
+            <Input
+              id="calibrationAttempts"
+              type="number"
+              value={data.calibrationAttempts || ''}
+              onChange={(e) => handleInputChange('calibrationAttempts', e.target.value)}
+              placeholder="e.g., 3"
+            />
+          </div>
+        </div>
+
         <h3 className="text-lg font-semibold pt-4">Live Performance Tracking</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -182,6 +206,49 @@ export const InternalSection3 = ({ data, updateData }: InternalSection3Props) =>
           </Select>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="detectionAccuracyPercent">Detection accuracy (%)</Label>
+            <Input
+              id="detectionAccuracyPercent"
+              type="number"
+              min="0"
+              max="100"
+              value={data.detectionAccuracyPercent || ''}
+              onChange={(e) => handleInputChange('detectionAccuracyPercent', e.target.value)}
+              placeholder="e.g., 85"
+            />
+          </div>
+          <div>
+            <Label htmlFor="responseTimeConsistency">Response time consistency</Label>
+            <Select value={data.responseTimeConsistency} onValueChange={(value) => handleInputChange('responseTimeConsistency', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select consistency level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="very-consistent">Very consistent</SelectItem>
+                <SelectItem value="mostly-consistent">Mostly consistent</SelectItem>
+                <SelectItem value="somewhat-inconsistent">Somewhat inconsistent</SelectItem>
+                <SelectItem value="very-inconsistent">Very inconsistent</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="measurementReliability">Measurement reliability</Label>
+            <Select value={data.measurementReliability} onValueChange={(value) => handleInputChange('measurementReliability', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select reliability level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="highly-reliable">Highly reliable</SelectItem>
+                <SelectItem value="reliable">Reliable</SelectItem>
+                <SelectItem value="somewhat-reliable">Somewhat reliable</SelectItem>
+                <SelectItem value="unreliable">Unreliable</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         <h3 className="text-lg font-semibold pt-4">App Performance</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -238,6 +305,59 @@ export const InternalSection3 = ({ data, updateData }: InternalSection3Props) =>
             <div className="flex justify-between text-sm text-muted-foreground mt-2">
               <span>Very confused (1)</span>
               <span>Intuitive (5)</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="appResponseTime">App response time assessment</Label>
+            <Select value={data.appResponseTime} onValueChange={(value) => handleInputChange('appResponseTime', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select response time" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="excellent">Excellent (instant)</SelectItem>
+                <SelectItem value="good">Good (&lt; 1 second)</SelectItem>
+                <SelectItem value="acceptable">Acceptable (1-3 seconds)</SelectItem>
+                <SelectItem value="slow">Slow (&gt; 3 seconds)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div>
+          <Label>Feature Discoverability (1=Hard to find, 5=Easy to find)</Label>
+          <div className="px-4 py-6">
+            <Slider
+              value={[data.featureDiscoverability || 3]}
+              onValueChange={(value) => handleSliderChange('featureDiscoverability', value)}
+              max={5}
+              min={1}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-sm text-muted-foreground mt-2">
+              <span>Hard to find (1)</span>
+              <span>Easy to find (5)</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <Label>Navigation Ease (1=Difficult, 5=Very easy)</Label>
+          <div className="px-4 py-6">
+            <Slider
+              value={[data.navigationEase || 3]}
+              onValueChange={(value) => handleSliderChange('navigationEase', value)}
+              max={5}
+              min={1}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-sm text-muted-foreground mt-2">
+              <span>Difficult (1)</span>
+              <span>Very easy (5)</span>
             </div>
           </div>
         </div>
