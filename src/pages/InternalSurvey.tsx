@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { ContactInfo } from "@/components/survey/ContactInfo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { FormProgress } from "@/components/survey/FormProgress";
 import { InternalSurveyData } from "@/types/survey";
