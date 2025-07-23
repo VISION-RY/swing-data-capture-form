@@ -1,4 +1,10 @@
 export interface InternalSurveyData {
+  // Contact Information (optional)
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  
   // Section 1: Testing Environment Setup
   testingLocationType: string;
   cageWidth: string;
@@ -85,6 +91,12 @@ export interface InternalSurveyData {
 }
 
 export interface ExternalSurveyData {
+  // Contact Information (optional)
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  
   // Section 1: Background Information
   userRole: string;
   techExperience: string;
